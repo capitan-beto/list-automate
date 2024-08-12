@@ -23,26 +23,32 @@ func HandleOR() {
 		if err := f.Close(); err != nil {
 			log.Error(err)
 		}
+		fmt.Println("Archivo guardado")
 	}()
 
 	//Leer filas
 
-	var sheet string = "Hoja1"
+	var sheet string = "precios-julio"
 	rows, err := f.GetRows(sheet)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
-	//iterar sobre las filas de precio
-
-	// formula, err := f.GetCellFormula(sheet, "D2")
+	// formula, err := f.GetCellFormula(sheet, "D2")  //Con este metodo podemos obtener funcion a utilizar
 	// fmt.Println(formula)
-	// baby, err := f.GetCellValue(sheet, "E2")
-	// fmt.Println(baby == "#N/A")
+
+	//iterar sobre las filas de precio
 
 	for i := range rows {
 		if i > 1 {
+
+			// BUSCARV recibe tres argumentos (VB, RB, C, Coincidencia)
+			// VB: Valor de referencia (El codigo de producto al que le queremos actualizar precio).
+			// RB: Rango de busqueda, donde se encuentra el valor que de busqueda (celdas de la Hoja2)
+			// C: Columna dentro del rango de busqueda (columna de precio)
+			// Coincidencia: VERDADERO o FALSO (resultado aprox o exacto)
+
 			//Coord. donde se escribe res BUSCARV
 			vlupWriteCoord, err := excelize.CoordinatesToCellName(4, i+1)
 			if err != nil {
@@ -58,7 +64,9 @@ func HandleOR() {
 			}
 
 			//ejecutar BUSCARV
-			if err = f.SetCellFormula(sheet, vlupWriteCoord, fmt.Sprintf("=VLOOKUP(%s,Hoja2!A1:C860,3,0)", critCoord)); err != nil {
+			err = f.SetCellFormula(sheet, vlupWriteCoord,
+				fmt.Sprintf("=VLOOKUP(%s,Hoja2!A1:C860,3,0)", critCoord))
+			if err != nil {
 				log.Error(err)
 			}
 
@@ -66,7 +74,7 @@ func HandleOR() {
 
 			vlupCells, err := f.CalcCellValue(sheet, vlupWriteCoord)
 			if err != nil {
-				log.Error(err)
+				log.Error("error: '", err, "' in row: ", i, "\n")
 				continue
 			}
 
@@ -75,6 +83,7 @@ func HandleOR() {
 			val, err := strconv.Atoi(vlupCells)
 			if err != nil {
 				log.Error(err)
+				return
 			}
 
 			//sumar porcentaje de gananacia
@@ -98,7 +107,11 @@ func HandleOR() {
 			}
 		}
 
+		fmt.Printf("Row %d processed \n", i)
+
 	}
+
+	fmt.Println("All rows processed!")
 
 	now := time.Now()
 
@@ -111,7 +124,7 @@ func HandleOR() {
 		return
 	}
 
-	if err = f.SaveAs("NewList.xlsx"); err != nil {
+	if err = f.SaveAs(fmt.Sprintf("lista-or-%s.xlsx", now.Format("02-01"))); err != nil {
 		log.Error(err)
 		return
 	}
