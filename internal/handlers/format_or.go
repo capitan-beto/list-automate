@@ -12,7 +12,7 @@ import (
 func HandleOR() {
 
 	// Leer excel a modificar
-	f, err := excelize.OpenFile("or-base.xlsx")
+	f, err := excelize.OpenFile("list-base/or-base.xlsx")
 	if err != nil {
 		log.Error(err)
 		return
@@ -45,7 +45,7 @@ func HandleOR() {
 
 			// BUSCARV recibe tres argumentos (VB, RB, C, Coincidencia)
 			// VB: Valor de referencia (El codigo de producto al que le queremos actualizar precio).
-			// RB: Rango de busqueda, donde se encuentra el valor que de busqueda (celdas de la Hoja2)
+			// RB: Rango de busqueda, donde se encuentra el valor de busqueda (celdas de la Hoja2)
 			// C: Columna dentro del rango de busqueda (columna de precio)
 			// Coincidencia: VERDADERO o FALSO (resultado aprox o exacto)
 
@@ -101,7 +101,8 @@ func HandleOR() {
 
 			//escribir nuevo valor
 
-			if err = f.SetCellFormula(sheet, newPriceCoords, fmt.Sprintf("=DOLLAR(%d, 2)", newPrice)); err != nil {
+			if err = f.SetCellFormula(sheet, newPriceCoords,
+				fmt.Sprintf("=DOLLAR(%d, 2)", newPrice)); err != nil {
 				log.Error(err)
 				return
 			}
@@ -124,7 +125,7 @@ func HandleOR() {
 		return
 	}
 
-	if err = f.SaveAs(fmt.Sprintf("lista-or-%s.xlsx", now.Format("02-01"))); err != nil {
+	if err = f.SaveAs(fmt.Sprintf("lists/lista-or-%s.xlsx", now.Format("02-01"))); err != nil {
 		log.Error(err)
 		return
 	}
