@@ -17,5 +17,4 @@ func PostToDB(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 		return
 	}
-
 }

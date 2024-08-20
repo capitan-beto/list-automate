@@ -6,4 +6,7 @@ func Handler(list string) {
 		HandleOR()
 	}
 
+	if list == "exceltodb" {
+	}
+
 }
