@@ -7,6 +7,7 @@ func Handler(list string) {
 	}
 
 	if list == "exceltodb" {
+		PostToDB()
 	}
 
 }
