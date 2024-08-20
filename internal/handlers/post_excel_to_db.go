@@ -3,12 +3,11 @@ package handlers
 import (
 	"cmd/api/main.go/internal/tools"
 	"database/sql"
-	"net/http"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func PostToDB(w http.ResponseWriter, r *http.Request) {
+func PostToDB() {
 	var db *sql.DB
 	var err error
 
@@ -16,5 +15,9 @@ func PostToDB(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 		return
+	}
+
+	if err := tools.XlsxHandler(db); err != nil {
+		log.Error(err)
 	}
 }
