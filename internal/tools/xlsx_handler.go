@@ -10,9 +10,9 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-func XlsxHandler(db *sql.DB) error {
+func XlsxHandler(db *sql.DB, path string) error {
 
-	f, err := excelize.OpenFile("list-base/led-smd.xlsx")
+	f, err := excelize.OpenFile("list-base/" + path)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -39,18 +39,24 @@ func XlsxHandler(db *sql.DB) error {
 				continue
 			}
 			product := models.Product{
-				Id:     rows[i][0],
-				Desc:   rows[i][1],
-				Price:  price,
-				Subcat: rows[i][3],
-				Cat:    rows[i][4],
-				Src:    rows[i][5],
-				Date:   rows[i][6],
+				ID:       rows[i][0],
+				Desc:     rows[i][1],
+				Price:    price,
+				Subcat:   rows[i][3],
+				Cat:      rows[i][4],
+				Src:      rows[i][5],
+				Date:     rows[i][6],
+				AlternID: rows[i][7],
 			}
 
-			fmt.Println(product)
+			if err = AddProduct(&product, db); err != nil {
+				log.Error("error: '", err, "' in row: ", i, "\n")
+				continue
+			}
 		}
 	}
 
+	db.Close()
+	fmt.Printf("All %d rows processed!", len(rows))
 	return nil
 }
