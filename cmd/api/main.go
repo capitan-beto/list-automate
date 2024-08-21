@@ -10,6 +10,7 @@ import (
 )
 
 var list = flag.String("list", "none", "list requested for processing")
+var path = flag.String("p", "none", "path of desired list")
 
 func main() {
 	err := godotenv.Load()
@@ -18,5 +19,5 @@ func main() {
 	}
 
 	flag.Parse()
-	handlers.Handler(*list)
+	handlers.Handler(*list, *path)
 }

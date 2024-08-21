@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func PostToDB() {
+func PostToDB(path string) {
 	var db *sql.DB
 	var err error
 
@@ -17,7 +17,7 @@ func PostToDB() {
 		return
 	}
 
-	if err := tools.XlsxHandler(db); err != nil {
+	if err := tools.XlsxHandler(db, path); err != nil {
 		log.Error(err)
 	}
 }

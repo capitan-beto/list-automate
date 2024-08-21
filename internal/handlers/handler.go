@@ -1,13 +1,13 @@
 package handlers
 
-func Handler(list string) {
+func Handler(list, path string) {
 
 	if list == "or" {
 		HandleOR()
 	}
 
 	if list == "exceltodb" {
-		PostToDB()
+		PostToDB(path)
 	}
 
 }
