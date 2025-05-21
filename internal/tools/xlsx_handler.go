@@ -11,8 +11,9 @@ import (
 )
 
 func XlsxHandler(db *sql.DB, path string) error {
+	defer timer("xlsx file")()
 
-	f, err := excelize.OpenFile("list-base/" + path)
+	f, err := excelize.OpenFile(path)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -39,14 +40,10 @@ func XlsxHandler(db *sql.DB, path string) error {
 				continue
 			}
 			product := models.Product{
-				ID:       rows[i][0],
-				Desc:     rows[i][1],
-				Price:    price,
-				Subcat:   rows[i][3],
-				Cat:      rows[i][4],
-				Src:      rows[i][5],
-				Date:     rows[i][6],
-				AlternID: rows[i][7],
+				ID:    rows[i][0],
+				Desc:  rows[i][1],
+				Price: price,
+				Date:  rows[i][3],
 			}
 
 			if err = AddProduct(&product, db); err != nil {
@@ -57,6 +54,6 @@ func XlsxHandler(db *sql.DB, path string) error {
 	}
 
 	db.Close()
-	fmt.Printf("All %d rows processed!", len(rows))
+	fmt.Printf("All %d rows processed!\nb", len(rows))
 	return nil
 }

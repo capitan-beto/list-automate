@@ -41,14 +41,10 @@ func AddProduct(p *models.Product, db *sql.DB) error {
 	id := p.ID
 	desc := p.Desc
 	price := p.Price
-	subcat := p.Subcat
-	cat := p.Cat
-	src := p.Src
 	date := p.Date
-	alternID := p.AlternID
 
-	query := "REPLACE INTO products_db (id, item_desc, price, cat, src, date, subcat, altern_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
-	_, err := db.Exec(query, &id, &desc, &price, &cat, &src, &date, &subcat, &alternID)
+	query := "REPLACE INTO products_db (id, item_desc, price, date) VALUES(?, ?, ?, ?)"
+	_, err := db.Exec(query, &id, &desc, &price, &date)
 	if err != nil {
 		return err
 	}
